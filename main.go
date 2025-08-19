@@ -5,8 +5,8 @@ import (
     "os"
     "strconv"
 
-    "my_go_project/koodWordle/game"
-    "my_go_project/koodWordle/io"
+    "koodWordle/game"
+    "koodWordle/io"
 )
 
 
