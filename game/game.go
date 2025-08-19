@@ -16,44 +16,43 @@ const (
 
 // Play runs the game loop
 func Play(username, secretWord string) (bool, int) {
-	attempts := 0
-	maxAttempts := 6
-	remainingLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    attempts := 0
+    maxAttempts := 6
+    remainingLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    scanner := bufio.NewScanner(os.Stdin)
 
-	scanner := bufio.NewScanner(os.Stdin)
+    for attempts < maxAttempts {
+        fmt.Print("Enter your guess: ")
+        if !scanner.Scan() {
+            break // handle EOF
+        }
+        guess := strings.ToLower(scanner.Text())
 
-	for attempts < maxAttempts {
-		fmt.Print("Enter your guess: ")
-		if !scanner.Scan() {
-			break // handle EOF (Ctrl+D)
-		}
-		guess := strings.ToLower(scanner.Text())
+        if len(guess) != 5 {
+            fmt.Println("Guess must be 5 letters.")
+            continue
+        }
 
-		if len(guess) != 5 {
-			fmt.Println("Guess must be 5 letters.")
-			continue
-		}
+        attempts++
+        // Feedback
+        feedback := GetFeedback(secretWord, guess)
+        fmt.Printf("Feedback: %s\n", feedback)
 
-		attempts++
+        // Update remaining letters
+        remainingLetters = updateRemainingLetters(remainingLetters, guess, secretWord)
+        fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
+        fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
 
-		feedback := GetFeedback(secretWord, guess)
-		fmt.Printf("Feedback: %s\n", feedback)
+        if guess == secretWord {
+            fmt.Printf("Congratulations! You guessed the word!\n")
+            return true, attempts
+        }
+    }
 
-		remainingLetters = updateRemainingLetters(remainingLetters, guess, secretWord)
-		fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
-		fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
-
-		if guess == secretWord {
-			fmt.Printf("Congratulations, %s! You guessed the word!\n", username)
-			return true, attempts
-		}
-	}
-
-	fmt.Printf("Game over. The correct word was: %s\n", strings.ToLower(secretWord))
-
-	return false, attempts
+    // Only here, after 6 attempts
+    fmt.Printf("Game over. The correct word was: %s\n", secretWord)
+    return false, attempts
 }
-
 // Generate feedback string
 func GetFeedback(secret, guess string) string {
 	feedback := ""
