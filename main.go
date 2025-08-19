@@ -13,10 +13,12 @@ import (
 
 func main() {
 	// handle command-line arguments
+
 	if len(os.Args) < 2 {
-		fmt.Println("Please provide a word index, e.g., go run . 10")
+		fmt.Println("Please provide a number as command line argument")
 		return
 	}
+
 
 	index, err := strconv.Atoi(os.Args[1])
 	if err != nil {
