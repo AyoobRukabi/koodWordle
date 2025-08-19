@@ -34,9 +34,12 @@ func main() {
 	}
 
 	if index < 0 || index >= len(words) {
-		fmt.Println("Index out of range.")
+    	fmt.Println("Invalid word number.")
+		fmt.Println("Press Enter to exit...")
+		fmt.Scanln() // wait for Enter
 		return
 	}
+
 
 	secretWord := words[index]
 
