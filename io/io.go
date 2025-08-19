@@ -27,10 +27,11 @@ func LoadWordList(filename string) ([]string, error) {
 func GetUsername() string {
 	fmt.Print("Enter your username: ")
 	scanner := bufio.NewScanner(os.Stdin)
+	username := "Anonymous"
 	if scanner.Scan() {
-		return scanner.Text()
+		username = scanner.Text()
 	}
-	return "Anonymous"
+	return username
 }
 
 // Save game stats
