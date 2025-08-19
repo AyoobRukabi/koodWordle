@@ -22,7 +22,7 @@ func main() {
 
 	index, err := strconv.Atoi(os.Args[1])
 	if err != nil {
-		fmt.Println("Invalid index. Please provide a number.")
+		fmt.Println("Invalid command-line argument. Please launch with a valid number.")
 		return
 	}
 

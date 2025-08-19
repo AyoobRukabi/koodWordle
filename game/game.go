@@ -49,7 +49,8 @@ func Play(username, secretWord string) (bool, int) {
 		}
 	}
 
-	fmt.Printf("Sorry, you lost! The word was: %s\n", strings.ToUpper(secretWord))
+	fmt.Printf("Game over. The correct word was: %s\n", strings.ToLower(secretWord))
+
 	return false, attempts
 }
 
