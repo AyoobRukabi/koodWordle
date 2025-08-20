@@ -89,13 +89,10 @@ func getFeedback(secret, guess string) string {
 func updateRemainingLetters(remaining, guess, secret string) string {
 	result := ""
 	guess = strings.ToUpper(guess)
-	secret = strings.ToUpper(secret)
-
 	for _, r := range remaining {
-		if strings.ContainsRune(guess, r) && !strings.ContainsRune(secret, r) {
-			continue // remove only letters guessed that are NOT in secret
+		if !strings.ContainsRune(guess, r) || strings.ContainsRune(secret, r) {
+			result += string(r)
 		}
-		result += string(r)
 	}
 	return result
 }
