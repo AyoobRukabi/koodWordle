@@ -29,10 +29,12 @@ func main() {
 		fmt.Println("Word list not found or error reading file.")
 		return
 	}
+	
+	// ask for username
+	username := io.GetUsername()
 
 	// check if index is valid
 	if index < 0 || index >= len(words) {
-		fmt.Print("Enter your username: ")
 		io.GetUsername()
 		fmt.Println("Invalid word number.")
 		fmt.Println("Press Enter to exit...")
@@ -42,8 +44,7 @@ func main() {
 
 	secretWord := words[index]
 
-	// ask for username
-	username := io.GetUsername()
+	
 
 	// start game
 	win, attempts := game.Play(username, secretWord)
