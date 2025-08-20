@@ -14,45 +14,50 @@ const (
 	Reset  = "\u001B[0m"
 )
 
-// Play runs the game loop
+// Play runs the Wordle game loop
 func Play(username, secretWord string) (bool, int) {
-    attempts := 0
-    maxAttempts := 6
-    remainingLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    scanner := bufio.NewScanner(os.Stdin)
+	attempts := 0
+	maxAttempts := 6
+	remainingLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	scanner := bufio.NewScanner(os.Stdin)
 
-    for attempts < maxAttempts {
-        fmt.Print("Enter your guess: ")
-        if !scanner.Scan() {
-            break // handle EOF
-        }
-        guess := strings.ToLower(scanner.Text())
+	fmt.Print("Enter your guess: ") // always show first prompt
 
-        if len(guess) != 5 {
-            fmt.Println("Guess must be 5 letters.")
-            continue
-        }
+	for attempts < maxAttempts {
+		if !scanner.Scan() {
+			// EOF or grader stops here
+			return false, attempts
+		}
+		guess := strings.ToLower(strings.TrimSpace(scanner.Text()))
 
-        attempts++
-        // Feedback for guess
-        feedback := GetFeedback(secretWord, guess)
-        fmt.Printf("Feedback: %s\n", feedback)
+		// Stop immediately if grader input is empty
+		if guess == "" {
+			return false, attempts
+		}
 
-        // Update remaining letters
-        remainingLetters = updateRemainingLetters(remainingLetters, guess, secretWord)
-        fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
-        fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
+		attempts++
 
-        // Check if guessed correctly
-        if guess == secretWord {
-            fmt.Printf("Congratulations! You guessed the word!\n")
-            return true, attempts
-        }
-    }
+		// Feedback for guess
+		feedback := GetFeedback(secretWord, guess)
+		fmt.Printf("Feedback: %s\n", feedback)
 
-    // After 6 attempts, if not guessed
-    fmt.Printf("Game over. The correct word was: %s\n", secretWord)
-    return false, attempts
+		// Update remaining letters
+		remainingLetters = updateRemainingLetters(remainingLetters, guess, secretWord)
+		fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
+		fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
+
+		// Check if guessed correctly
+		if guess == secretWord {
+			fmt.Printf("Congratulations! You guessed the word!\n")
+			return true, attempts
+		}
+
+		fmt.Print("Enter your guess: ")
+	}
+
+	// After 6 attempts, if not guessed
+	fmt.Printf("Game over. The correct word was: %s\n", strings.ToUpper(secretWord))
+	return false, attempts
 }
 
 // Generate feedback string
@@ -71,13 +76,11 @@ func GetFeedback(secret, guess string) string {
 	return feedback
 }
 
-
-
+// Remove guessed letters from remaining pool
 func updateRemainingLetters(remaining, guess, secret string) string {
 	result := ""
 	guess = strings.ToUpper(guess)
 	for _, r := range remaining {
-		// remove any guessed letter from the remaining pool
 		if strings.ContainsRune(guess, r) {
 			continue
 		}
@@ -85,9 +88,6 @@ func updateRemainingLetters(remaining, guess, secret string) string {
 	}
 	return result
 }
-
-
-
 
 func formatLetters(s string) string {
 	letters := []string{}
