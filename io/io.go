@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // Load words from file
@@ -29,7 +30,7 @@ func GetUsername() string {
 	scanner := bufio.NewScanner(os.Stdin)
 	username := "Anonymous"
 	if scanner.Scan() {
-		username = scanner.Text()
+		username = strings.TrimSpace(scanner.Text())
 	}
 	return username
 }
@@ -97,7 +98,8 @@ func ShowStats(username string) {
 	if !scanner.Scan() {
 		return
 	}
-	if scanner.Text() != "yes" {
+	answer := strings.TrimSpace(scanner.Text())
+	if strings.ToLower(answer) != "yes" {
 		return
 	}
 
@@ -112,6 +114,8 @@ func ShowStats(username string) {
 	fmt.Printf("Games played: %d\n", gamesPlayed)
 	fmt.Printf("Games won: %d\n", gamesWon)
 	fmt.Printf("Average attempts per game: %.2f\n", avgAttempts)
-	fmt.Println("Press Enter to exit...")
+	fmt.Print("Press Enter to exit...")
 	scanner.Scan() // wait for Enter
 }
+
+
