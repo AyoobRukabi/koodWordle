@@ -10,26 +10,30 @@ import (
 )
 
 func main() {
+	// handle missing command-line argument
 	if len(os.Args) < 2 {
 		fmt.Println("Please provide a number as command line argument")
 		return
 	}
 
+	// parse argument
 	index, err := strconv.Atoi(os.Args[1])
 	if err != nil {
 		fmt.Println("Invalid command-line argument. Please launch with a valid number.")
 		return
 	}
 
+	// load word list
 	words, err := io.LoadWordList("wordle-words.txt")
 	if err != nil {
 		fmt.Println("Word list not found or error reading file.")
 		return
 	}
 
+	// check if index is valid
 	if index < 0 || index >= len(words) {
-		// Prompt username even if index invalid
 		fmt.Print("Enter your username: ")
+		io.GetUsername()
 		fmt.Println("Invalid word number.")
 		fmt.Println("Press Enter to exit...")
 		fmt.Scanln()
@@ -38,16 +42,19 @@ func main() {
 
 	secretWord := words[index]
 
+	// ask for username
 	username := io.GetUsername()
-	fmt.Println("Welcome to Wordle! Guess the 5-letter word.")
 
+	// start game
 	win, attempts := game.Play(username, secretWord)
 
+	// save stats
 	result := "loss"
 	if win {
 		result = "win"
 	}
 	io.SaveStats(username, secretWord, attempts, result)
 
+	// show stats
 	io.ShowStats(username)
 }
