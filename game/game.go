@@ -34,7 +34,7 @@ func Play(username, secretWord string) (bool, int) {
         }
 
         attempts++
-        // Feedback
+        // Feedback for guess
         feedback := GetFeedback(secretWord, guess)
         fmt.Printf("Feedback: %s\n", feedback)
 
@@ -43,16 +43,18 @@ func Play(username, secretWord string) (bool, int) {
         fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
         fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
 
+        // Check if guessed correctly
         if guess == secretWord {
             fmt.Printf("Congratulations! You guessed the word!\n")
             return true, attempts
         }
     }
 
-    // Only here, after 6 attempts
+    // After 6 attempts, if not guessed
     fmt.Printf("Game over. The correct word was: %s\n", secretWord)
     return false, attempts
 }
+
 // Generate feedback string
 func GetFeedback(secret, guess string) string {
 	feedback := ""
@@ -83,15 +85,6 @@ func updateRemainingLetters(remaining, guess, secret string) string {
 	}
 	return result
 }
-
-
-
-
-
-
-
-
-
 
 
 

@@ -21,3 +21,5 @@ func (u *User) AverageAttempts() float64 {
 	}
 	return float64(u.TotalAttempts) / float64(u.GamesPlayed)
 }
+
+
