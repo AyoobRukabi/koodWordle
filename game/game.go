@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -14,65 +15,63 @@ const (
 	Reset  = "\u001B[0m"
 )
 
-// Play runs the game loop
 func Play(username, secretWord string) (bool, int) {
 	attempts := 0
 	maxAttempts := 6
 	remainingLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	scanner := bufio.NewScanner(os.Stdin)
-
-	fmt.Print("Enter your guess: ")
+	secretWord = strings.ToLower(secretWord)
 
 	for attempts < maxAttempts {
+		fmt.Print("Enter your guess: ")
 		if !scanner.Scan() {
-			break // handle EOF
+			break
 		}
-		guess := strings.TrimSpace(scanner.Text())
+		guess := scanner.Text()
 
-		// validate length
+		// Check 5 letters
 		if len(guess) != 5 {
-			fmt.Println("Guess must be 5 letters.")
-			fmt.Print("Enter your guess: ")
+			fmt.Println("Your guess must be 5 letters.")
 			continue
 		}
 
-		// validate lowercase letters only
+		// Check lowercase
 		if !isLowercase(guess) {
 			fmt.Println("Your guess must only contain lowercase letters.")
-			fmt.Print("Enter your guess: ")
 			continue
 		}
 
 		attempts++
 
-		// Feedback for guess
-		feedback := GetFeedback(secretWord, guess)
+		// Generate feedback
+		feedback := getFeedback(secretWord, guess)
 		fmt.Printf("Feedback: %s\n", feedback)
 
-		// Update remaining letters
+		// Update remaining letters (remove only letters not in secret word)
 		remainingLetters = updateRemainingLetters(remainingLetters, guess, secretWord)
 		fmt.Printf("Remaining letters: %s\n", formatLetters(remainingLetters))
 		fmt.Printf("Attempts remaining: %d\n", maxAttempts-attempts)
 
-		// Check if guessed correctly
 		if guess == secretWord {
 			fmt.Println("Congratulations! You guessed the word!")
 			return true, attempts
 		}
-
-		// Prompt for next guess
-		if attempts < maxAttempts {
-			fmt.Print("Enter your guess: ")
-		}
 	}
 
-	// After max attempts
 	fmt.Printf("Game over. The correct word was: %s\n", strings.ToUpper(secretWord))
 	return false, attempts
 }
 
-// Generate feedback string
-func GetFeedback(secret, guess string) string {
+func isLowercase(s string) bool {
+	for _, r := range s {
+		if !unicode.IsLower(r) {
+			return false
+		}
+	}
+	return true
+}
+
+func getFeedback(secret, guess string) string {
 	feedback := ""
 	for i := 0; i < 5; i++ {
 		ch := strings.ToUpper(string(guess[i]))
@@ -87,33 +86,24 @@ func GetFeedback(secret, guess string) string {
 	return feedback
 }
 
-// Update remaining letters
 func updateRemainingLetters(remaining, guess, secret string) string {
 	result := ""
 	guess = strings.ToUpper(guess)
+	secret = strings.ToUpper(secret)
+
 	for _, r := range remaining {
-		if !strings.ContainsRune(guess, r) || strings.ContainsRune(secret, r) {
-			result += string(r)
+		if strings.ContainsRune(guess, r) && !strings.ContainsRune(secret, r) {
+			continue // remove only letters guessed that are NOT in secret
 		}
+		result += string(r)
 	}
 	return result
 }
 
-// Format remaining letters for display
 func formatLetters(s string) string {
 	letters := []string{}
 	for _, r := range s {
 		letters = append(letters, string(r))
 	}
 	return strings.Join(letters, " ")
-}
-
-// Check if string contains only lowercase letters
-func isLowercase(s string) bool {
-	for _, r := range s {
-		if r < 'a' || r > 'z' {
-			return false
-		}
-	}
-	return true
 }
