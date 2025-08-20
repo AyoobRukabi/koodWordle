@@ -35,7 +35,6 @@ func main() {
 
 	// check if index is valid
 	if index < 0 || index >= len(words) {
-		io.GetUsername()
 		fmt.Println("Invalid word number.")
 		fmt.Println("Press Enter to exit...")
 		fmt.Scanln()
