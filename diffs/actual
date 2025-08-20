@@ -1,0 +1,8 @@
+$> cat actual_stdout
+Enter your username: Enter your guess: Game over. The correct word was: JAVAC
+Do you want to see your stats? (yes/no): 
+
+$> cat expected_stdout
+Enter your username: Welcome to Wordle! Guess the 5-letter word.
+Enter your guess:  Your guess must only contain lowercase letters.
+Enter your guess:

@@ -1,0 +1,10 @@
+$> diff expected_stdout actual_stdout
+1,3c1,2
+< Enter your username: Welcome to Wordle! Guess the 5-letter word.
+< Enter your guess:  Your guess must only contain lowercase letters.
+< Enter your guess:  
+\ No newline at end of file
+---
+> Enter your username: Enter your guess: Game over. The correct word was: JAVAC
+> Do you want to see your stats? (yes/no): 
+\ No newline at end of file
